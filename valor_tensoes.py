@@ -33,6 +33,7 @@ class JanelaTensoesContent(MDBoxLayout):
     tensao_rs = StringProperty("0.0")
     tensao_st = StringProperty("0.0")
     tensao_tr = StringProperty("0.0")
+    media = StringProperty("0.0")
 
 class MeuSupervisorio(MDApp):
     def __init__(self, **kwargs):
@@ -149,8 +150,9 @@ class MeuSupervisorio(MDApp):
             rs = regs[0] / DIVISOR_TENSAO
             st = regs[1] / DIVISOR_TENSAO
             tr = regs[2] / DIVISOR_TENSAO
+            media = (rs + st + tr)/3.0
 
-            self._atualizar_ui(rs, st, tr)
+            self._atualizar_ui(rs, st, tr, media)
 
         except Exception as erro:
             print(f"[Modbus] Falha na leitura: {erro}")
@@ -161,12 +163,13 @@ class MeuSupervisorio(MDApp):
             self.lendo_modbus = False
 
     @mainthread
-    def _atualizar_ui(self, rs: float, st: float, tr: float):
-            if not self.dialog_tensoes:
+    def _atualizar_ui(self, rs: float, st: float, tr: float, media: float):
+            if not self.dialog_tensoes or not self.conteudo_tensoes:
                 return
             self.conteudo_tensoes.tensao_rs = f"{rs:.1f}"
             self.conteudo_tensoes.tensao_st = f"{st:.1f}"
             self.conteudo_tensoes.tensao_tr = f"{tr:.1f}"
+            self.conteudo_tensoes.media = f"{media:.1f}"
 
 if __name__ == "__main__":
     MeuSupervisorio().run()
