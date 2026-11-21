@@ -1,13 +1,13 @@
 #:kivy 1.11.1
 MDBoxLayout:
     orientation: "vertical"
-    md_bg_color: app.theme_cls.backgroundColor
+    md_bg_color: app.theme_cls.bg_normal
 
     MDTopAppBar:
         title: "Monitoramento de Tensões - Bancada"
         elevation: 4
         pos_hint: {"top": 1}
-        md_bg_color: app.theme_cls.primaryColor
+        md_bg_color: app.theme_cls.primary_color
         specific_text_color: 1, 1, 1, 1
 
     # Este container receberá o widget do Matplotlib via Python
