@@ -16,3 +16,24 @@ MDBoxLayout:
         orientation: "vertical"
         padding: "16dp"
         spacing: "8dp"
+
+<JanelaTensoesContent>:
+    orientation: "vertical"
+    spacing: "12dp"
+    size_hint_y: None
+    height: "120dp"
+
+    MDLabel:
+        text: "Tensão RS: " + root.tensao_rs + " V"
+        theme_text_color: "Primary"
+        font_style: "H6"
+    
+    MDLabel:
+        text: "Tensão ST: " + root.tensao_st + " V"
+        theme_text_color: "Primary"
+        font_style: "H6"
+
+    MDLabel:
+        text: "Tensão TR: " + root.tensao_tr + " V"
+        theme_text_color: "Primary"
+        font_style: "H6"
