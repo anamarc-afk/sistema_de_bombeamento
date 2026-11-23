@@ -42,3 +42,43 @@ MDBoxLayout:
         text: "Média Tensões: " + root.media + " V"
         theme_text_color: "Primary"
         font_style: "H6"
+
+<PainelTemperaturas>:
+    orientation: 'vertical'
+    padding: 20
+    spacing: 10
+
+    Label:
+        text: "Monitoramento de Temperaturas"
+        font_size: 24
+        bold: True
+        size_hint_y: None
+        height: 50
+
+    Label:
+        id: lbl_temp_r
+        text: "Temp Enrolamento R: -- °C"
+        font_size: 20
+
+    Label:
+        id: lbl_temp_s
+        text: "Temp Enrolamento S: -- °C"
+        font_size: 20
+
+    Label:
+        id: lbl_temp_t
+        text: "Temp Enrolamento T: -- °C"
+        font_size: 20
+
+    Label:
+        id: lbl_temp_carc
+        text: "Temp Carcaça: -- °C"
+        font_size: 20
+
+    Label:
+        id: lbl_status
+        text: "Status: Aguardando Conexão..."
+        font_size: 16
+        color: 1, 1, 0, 1
+        size_hint_y: None
+        height: 40
