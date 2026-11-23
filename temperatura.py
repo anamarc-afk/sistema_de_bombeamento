@@ -1,11 +1,8 @@
 from pymodbus.client import ModbusTcpClient
-from kivy.app import App
+from kivymd.app import MDApp
 from kivy.uix.boxlayout import BoxLayout
 from kivy.clock import Clock
 from kivy.lang import Builder
-
-# Carrega o arquivo KV
-Builder.load_file('temperaturas.kv')
 
 class LeitorTemperaturasModbus:
     """
@@ -92,11 +89,13 @@ class PainelTemperaturas(BoxLayout):
             self.ids.lbl_status.text = "Status: Falha na Leitura (Dados Desatualizados)"
             self.ids.lbl_status.color = (1, 0, 0, 1)
 
-class SistemaSupervisorioApp(App):
+class SistemaSupervisorioApp(MDApp):
     """
     App principal.
     """
     def build(self):
+        self.theme_cls.theme_style = "Dark"
+        Builder.load_file('base.kv')
         leitor = LeitorTemperaturasModbus(host='10.15.30.181', port=502)
         painel = PainelTemperaturas(leitor_modbus=leitor)
         painel.iniciar_atualizacao(intervalo=1.0)
