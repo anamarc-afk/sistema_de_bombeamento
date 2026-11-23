@@ -2,7 +2,6 @@ import collections
 import threading
 import matplotlib.pyplot as plt
 from pymodbus.client import ModbusTcpClient
-
 from kivy.clock import Clock, mainthread
 from kivy.clock import Clock
 from kivy.lang import Builder
@@ -36,6 +35,7 @@ class BaseApp(MDApp):
         self.dados_rs = collections.deque(maxlen=self.max_pontos)
         self.dados_st = collections.deque(maxlen=self.max_pontos)
         self.dados_tr = collections.deque(maxlen=self.max_pontos)
+        self.dados_media = collections.deque(maxlen=self.max_pontos)
         self.tempo = collections.deque(maxlen=self.max_pontos)
         self.contador = 0
 
@@ -47,6 +47,7 @@ class BaseApp(MDApp):
         self.linha_rs, = self.ax.plot([], [], label='Tensão RS', color='#2E86C1', linewidth=2)
         self.linha_st, = self.ax.plot([], [], label='Tensão ST', color='#28B463', linewidth=2)
         self.linha_tr, = self.ax.plot([], [], label='Tensão TR', color='#884EA0', linewidth=2)
+        self.linha_media, = self.ax.plot([], [], label='Média', color='#D35400', linewidth=2, linestyle='--')
 
         self.ax.set_title("Tendência de Tensões", fontsize=12)
         self.ax.set_xlabel("Leituras")
@@ -86,15 +87,20 @@ class BaseApp(MDApp):
     @mainthread
     def atualizar_grafico(self, v_rs, v_st, v_tr):
         """3. Roda na Thread Principal. Apenas injeta os números e redesenha."""
+        v_media = (v_rs + v_st + v_tr) / 3.0
+
         self.contador += 1
         self.tempo.append(self.contador)
         self.dados_rs.append(v_rs)
         self.dados_st.append(v_st)
         self.dados_tr.append(v_tr)
+        self.dados_media.append(v_media)
         
         self.linha_rs.set_data(self.tempo, self.dados_rs)
         self.linha_st.set_data(self.tempo, self.dados_st)
         self.linha_tr.set_data(self.tempo, self.dados_tr)
+        self.linha_media.set_data(self.tempo, self.dados_media)
+        
         
         self.ax.set_xlim(max(0, self.contador - self.max_pontos), self.contador + 5)
         
