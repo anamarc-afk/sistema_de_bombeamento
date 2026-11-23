@@ -12,7 +12,7 @@ from pymodbus.client import ModbusTcpClient
 MODBUS_MODO = "TCP"  # "TCP" ou "RTU"
 
 # Configurações Modbus TCP
-TCP_HOST = "192.168.0.50"
+TCP_HOST = "10.15.30.181"
 TCP_PORT = 502
 
 # Configurações Modbus RTU (se MODBUS_MODO == "RTU")
