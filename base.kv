@@ -1,47 +1,290 @@
 #:kivy 1.11.1
+
 MDBoxLayout:
     orientation: "vertical"
-    md_bg_color: app.theme_cls.bg_normal
+    md_bg_color: (0.85, 0.85, 0.85, 1) if hasattr(app, "abrir_janela_tensoes") else (1, 1, 1, 1)
 
-    MDTopAppBar:
-        title: "Monitoramento de Tensões - Bancada"
-        elevation: 4
-        pos_hint: {"top": 1}
-        md_bg_color: app.theme_cls.primary_color
-        specific_text_color: 1, 1, 1, 1
+    # Este bloco inteiro some automaticamente no tensão_2.py
+    MDBoxLayout:
+        orientation: "vertical"
+        size_hint_y: None
+        height: self.minimum_height if hasattr(app, "abrir_janela_tensoes") else 0
+        opacity: 1 if hasattr(app, "abrir_janela_tensoes") else 0
+        disabled: not hasattr(app, "abrir_janela_tensoes")
 
-    # Este container receberá o widget do Matplotlib via Python
+        MDTopAppBar:
+            title: "Supervisório — Sistema de Bombeamento"
+            elevation: 0
+            md_bg_color: 0.28, 0.30, 0.32, 1
+            specific_text_color: 0.96, 0.96, 0.96, 1
+
+        MDBoxLayout:
+            size_hint_y: None
+            height: "44dp"
+            padding: "16dp", "4dp"
+            spacing: "12dp"
+            md_bg_color: 0.78, 0.78, 0.78, 1
+
+            MDIcon:
+                icon: getattr(app, "status_comm_icone", "lan-pending")
+                theme_text_color: "Custom"
+                text_color: getattr(app, "status_comm_cor", [0.35, 0.35, 0.35, 1])
+                size_hint_x: None
+                width: "24dp"
+                pos_hint: {"center_y": 0.5}
+
+            MDLabel:
+                text: getattr(app, "status_comm_texto", "Monitoramento Ativo")
+                theme_text_color: "Custom"
+                text_color: getattr(app, "status_comm_cor", [0.25, 0.25, 0.25, 1])
+                bold: True
+                font_style: "Subtitle2"
+                pos_hint: {"center_y": 0.5}
+
+            MDLabel:
+                text: getattr(app, "ambiente_texto", "Bancada")
+                halign: "right"
+                theme_text_color: "Custom"
+                text_color: 0.25, 0.25, 0.25, 1
+                font_style: "Caption"
+                pos_hint: {"center_y": 0.5}
+
+        MDBoxLayout:
+            orientation: "vertical"
+            size_hint_y: None
+            height: self.minimum_height
+            padding: "20dp"
+            spacing: "16dp"
+
+            MDLabel:
+                text: "DIAGNÓSTICO ELÉTRICO DO MOTOR (SELECIONE PARA DETALHAR)"
+                size_hint_y: None
+                height: "28dp"
+                theme_text_color: "Custom"
+                text_color: 0.22, 0.22, 0.22, 1
+                font_style: "Subtitle2"
+                bold: True
+
+            MDGridLayout:
+                cols: 2
+                spacing: "16dp"
+                size_hint_y: None
+                height: "160dp"
+
+                MDRectangleFlatIconButton:
+                    text: "TENSÕES E MÉDIA (V)"
+                    icon: "flash-outline"
+                    size_hint: 1, 1
+                    md_bg_color: 0.92, 0.92, 0.92, 1
+                    line_color: 0.45, 0.45, 0.45, 1
+                    text_color: 0.15, 0.15, 0.15, 1
+                    icon_color: 0.25, 0.25, 0.25, 1
+                    on_release: app.abrir_janela_tensoes() if hasattr(app, "abrir_janela_tensoes") else None
+
+                MDRectangleFlatIconButton:
+                    text: "CORRENTES DO MOTOR (A)"
+                    icon: "current-ac"
+                    size_hint: 1, 1
+                    md_bg_color: 0.92, 0.92, 0.92, 1
+                    line_color: 0.45, 0.45, 0.45, 1
+                    text_color: 0.15, 0.15, 0.15, 1
+                    icon_color: 0.25, 0.25, 0.25, 1
+                    on_release: app.abrir_janela_correntes() if hasattr(app, "abrir_janela_correntes") else None
+
+                MDRectangleFlatIconButton:
+                    text: "DEMANDA REGISTRADA (kW)"
+                    icon: "gauge"
+                    size_hint: 1, 1
+                    md_bg_color: 0.92, 0.92, 0.92, 1
+                    line_color: 0.45, 0.45, 0.45, 1
+                    text_color: 0.15, 0.15, 0.15, 1
+                    icon_color: 0.25, 0.25, 0.25, 1
+                    on_release: app.abrir_janela_demanda() if hasattr(app, "abrir_janela_demanda") else None
+
+                MDRectangleFlatIconButton:
+                    text: "FATOR DE POTÊNCIA"
+                    icon: "sine-wave"
+                    size_hint: 1, 1
+                    md_bg_color: 0.92, 0.92, 0.92, 1
+                    line_color: 0.45, 0.45, 0.45, 1
+                    text_color: 0.15, 0.15, 0.15, 1
+                    icon_color: 0.25, 0.25, 0.25, 1
+                    on_release: app.abrir_janela_fp() if hasattr(app, "abrir_janela_fp") else None
+
+    # Área do gráfico: ocupa 100% da janela no tensão_2.py
     MDBoxLayout:
         id: graph_container
         orientation: "vertical"
-        padding: "16dp"
-        spacing: "8dp"
+        size_hint: 1, 1
+
+
+# --- Conteúdo das 4 Janelas de Detalhamento (MDDialog) ---
 
 <JanelaTensoesContent>:
     orientation: "vertical"
-    spacing: "12dp"
+    spacing: "10dp"
     size_hint_y: None
-    height: "120dp"
+    height: "180dp"
 
     MDLabel:
-        text: "Tensão RS: " + root.tensao_rs + " V"
-        theme_text_color: "Primary"
-        font_style: "H6"
-    
-    MDLabel:
-        text: "Tensão ST: " + root.tensao_st + " V"
-        theme_text_color: "Primary"
+        text: "Tensão RS:  " + root.tensao_rs + " V"
+        theme_text_color: "Custom"
+        text_color: 0.15, 0.15, 0.15, 1
         font_style: "H6"
 
     MDLabel:
-        text: "Tensão TR: " + root.tensao_tr + " V"
-        theme_text_color: "Primary"
+        text: "Tensão ST:  " + root.tensao_st + " V"
+        theme_text_color: "Custom"
+        text_color: 0.15, 0.15, 0.15, 1
         font_style: "H6"
 
     MDLabel:
-        text: "Média Tensões: " + root.media + " V"
-        theme_text_color: "Primary"
+        text: "Tensão TR:  " + root.tensao_tr + " V"
+        theme_text_color: "Custom"
+        text_color: 0.15, 0.15, 0.15, 1
         font_style: "H6"
+
+    MDLabel:
+        text: "Média das Tensões:  " + root.media + " V"
+        theme_text_color: "Custom"
+        text_color: 0.10, 0.10, 0.10, 1
+        bold: True
+        font_style: "H6"
+
+    MDLabel:
+        text: getattr(root, "status_dados", "")
+        theme_text_color: "Custom"
+        text_color: 0.35, 0.35, 0.35, 1
+        font_style: "Caption"
+
+
+<JanelaCorrentesContent>:
+    orientation: "vertical"
+    spacing: "10dp"
+    size_hint_y: None
+    height: "210dp"
+
+    MDLabel:
+        text: "Corrente Fase R:  " + root.corrente_r + " A"
+        theme_text_color: "Custom"
+        text_color: 0.15, 0.15, 0.15, 1
+        font_style: "H6"
+
+    MDLabel:
+        text: "Corrente Fase S:  " + root.corrente_s + " A"
+        theme_text_color: "Custom"
+        text_color: 0.15, 0.15, 0.15, 1
+        font_style: "H6"
+
+    MDLabel:
+        text: "Corrente Fase T:  " + root.corrente_t + " A"
+        theme_text_color: "Custom"
+        text_color: 0.15, 0.15, 0.15, 1
+        font_style: "H6"
+
+    MDLabel:
+        text: "Corrente Neutro:  " + root.corrente_n + " A"
+        theme_text_color: "Custom"
+        text_color: 0.15, 0.15, 0.15, 1
+        font_style: "H6"
+
+    MDLabel:
+        text: "Corrente Média:  " + root.corrente_media + " A"
+        theme_text_color: "Custom"
+        text_color: 0.10, 0.10, 0.10, 1
+        bold: True
+        font_style: "H6"
+
+    MDLabel:
+        text: getattr(root, "status_dados", "")
+        theme_text_color: "Custom"
+        text_color: 0.35, 0.35, 0.35, 1
+        font_style: "Caption"
+
+
+<JanelaDemandaContent>:
+    orientation: "vertical"
+    spacing: "10dp"
+    size_hint_y: None
+    height: "210dp"
+
+    MDLabel:
+        text: "Demanda Atual:  " + root.demanda_atual + " kW"
+        theme_text_color: "Custom"
+        text_color: 0.10, 0.10, 0.10, 1
+        bold: True
+        font_style: "H6"
+
+    MDLabel:
+        text: "Demanda Anterior:  " + root.demanda_anterior + " kW"
+        theme_text_color: "Custom"
+        text_color: 0.15, 0.15, 0.15, 1
+        font_style: "H6"
+
+    MDLabel:
+        text: "Demanda Média:  " + root.demanda_media + " kW"
+        theme_text_color: "Custom"
+        text_color: 0.15, 0.15, 0.15, 1
+        font_style: "H6"
+
+    MDLabel:
+        text: "Demanda de Pico:  " + root.demanda_pico + " kW"
+        theme_text_color: "Custom"
+        text_color: 0.15, 0.15, 0.15, 1
+        font_style: "H6"
+
+    MDLabel:
+        text: "Demanda Prevista:  " + root.demanda_prevista + " kW"
+        theme_text_color: "Custom"
+        text_color: 0.15, 0.15, 0.15, 1
+        font_style: "H6"
+
+    MDLabel:
+        text: getattr(root, "status_dados", "")
+        theme_text_color: "Custom"
+        text_color: 0.35, 0.35, 0.35, 1
+        font_style: "Caption"
+
+
+<JanelaFatorPotenciaContent>:
+    orientation: "vertical"
+    spacing: "10dp"
+    size_hint_y: None
+    height: "180dp"
+
+    MDLabel:
+        text: "Fator de Potência Fase R:  " + root.fp_r
+        theme_text_color: "Custom"
+        text_color: 0.15, 0.15, 0.15, 1
+        font_style: "H6"
+
+    MDLabel:
+        text: "Fator de Potência Fase S:  " + root.fp_s
+        theme_text_color: "Custom"
+        text_color: 0.15, 0.15, 0.15, 1
+        font_style: "H6"
+
+    MDLabel:
+        text: "Fator de Potência Fase T:  " + root.fp_t
+        theme_text_color: "Custom"
+        text_color: 0.15, 0.15, 0.15, 1
+        font_style: "H6"
+
+    MDLabel:
+        text: "Fator de Potência Total:  " + root.fp_total
+        theme_text_color: "Custom"
+        text_color: 0.10, 0.10, 0.10, 1
+        bold: True
+        font_style: "H6"
+
+    MDLabel:
+        text: getattr(root, "status_dados", "")
+        theme_text_color: "Custom"
+        text_color: 0.35, 0.35, 0.35, 1
+        font_style: "Caption"
+
+
+# --- Painel de Temperaturas (usado pelo temperatura.py) ---
 
 <PainelTemperaturas>:
     orientation: 'vertical'
