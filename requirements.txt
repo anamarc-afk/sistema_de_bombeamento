@@ -1,4 +1,7 @@
 Kivy==2.3.1
 pymodbus==3.11.1
 pyModbusTCP==0.2.0
+matplotlib
+SQLAlchemy
+git+https://github.com/kivy-garden/matplotlib.git
 https://github.com/kivymd/KivyMD/archive/master.zip
